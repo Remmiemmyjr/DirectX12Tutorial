@@ -88,8 +88,6 @@
     <ClInclude Include="source\Render API\DirectX12\DXGI\DXGISwapChain.h" />
     <ClInclude Include="source\Render API\DirectX12\Commands\D12CommandList.h" />
     <ClInclude Include="source\Render API\DirectX12\Commands\D12CommandQueue.h" />
-    <ClInclude Include="source\Render API\DirectX12\Debug\DXGIDebug.h" />
-    <ClInclude Include="source\Render API\DirectX12\Debug\D12Debug.h" />
     <ClInclude Include="source\Render API\DirectX12\Base\D12Device.h" />
     <ClInclude Include="source\Render API\DirectX12\DXGI\DXGIAdapter.h" />
     <ClInclude Include="source\Helper.h" />
@@ -108,8 +106,6 @@
     <ClCompile Include="source\Render API\DirectX12\DXGI\DXGISwapChain.cpp" />
     <ClCompile Include="source\Render API\DirectX12\Commands\D12CommandList.cpp" />
     <ClCompile Include="source\Render API\DirectX12\Commands\D12CommandQueue.cpp" />
-    <ClCompile Include="source\Render API\DirectX12\Debug\DXGIDebug.cpp" />
-    <ClCompile Include="source\Render API\DirectX12\Debug\D12Debug.cpp" />
     <ClCompile Include="source\Render API\DirectX12\Base\D12Device.cpp" />
     <ClCompile Include="source\Render API\DirectX12\DXGI\DXGIAdapter.cpp" />
     <ClCompile Include="source\Render API\DirectX12\DXGI\DXGIFactory.cpp" />

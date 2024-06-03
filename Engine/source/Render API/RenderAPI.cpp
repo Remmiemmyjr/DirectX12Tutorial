@@ -7,7 +7,7 @@
 #include "DirectX12/DXGI/DXGIAdapter.h"
 
 
-#include "DirectX12/Debug/D12Debug.h"
+//#include "DirectX12/Debug/D12Debug.h"
 
 
 
@@ -28,7 +28,7 @@ namespace Engine {
 		mHeight = height;
 
 		//this could be disabled during non-debug-builds
-		D12Debug::Get().Enable();
+		//D12Debug::Get().Enable();
 
 		DXGIFactory factory;
 		DXGIAdapter adapter = factory.GetAdapter();

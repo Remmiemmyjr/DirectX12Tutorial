@@ -39,12 +39,6 @@
     <ClInclude Include="source\Render API\DirectX12\Base\D12Device.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="source\Render API\DirectX12\Debug\D12Debug.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="source\Render API\DirectX12\Debug\DXGIDebug.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="source\Render API\DirectX12\Commands\D12CommandQueue.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -90,12 +84,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="source\Render API\DirectX12\Base\D12Device.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="source\Render API\DirectX12\Debug\D12Debug.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="source\Render API\DirectX12\Debug\DXGIDebug.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="source\Render API\DirectX12\Commands\D12CommandQueue.cpp">

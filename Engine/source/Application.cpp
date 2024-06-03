@@ -5,7 +5,7 @@
 //#include <windowsx.h>
 
 
-#include "Render API/DirectX12/Debug/DXGIDebug.h"
+//#include "Render API/DirectX12/Debug/DXGIDebug.h"
 
 
 namespace Engine {
@@ -98,7 +98,7 @@ namespace Engine {
 
 		mRenderer.Release();
 
-		DXGIDebug::Get().GetLiveObjects();
+		//DXGIDebug::Get().GetLiveObjects();
 
 		
 	}
