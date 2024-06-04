@@ -35,10 +35,26 @@ namespace Engine {
 
 	void D12Resource::Release()
 	{
+		if (mMemory && Get())
+		{
+			Get()->Unmap(0, 0);
+		}
+
 		if (Get()) {
 
 			Reset();
 		}
+
+	}
+
+	void* D12Resource::GetCPUMemory()
+	{
+		if (!mMemory)
+		{
+			Get()->Map(0, 0, &mMemory);
+		}
+
+		return mMemory;
 	}
 
 

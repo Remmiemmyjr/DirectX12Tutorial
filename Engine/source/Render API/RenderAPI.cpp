@@ -6,6 +6,8 @@
 #include "DirectX12/DXGI/DXGIFactory.h"
 #include "DirectX12/DXGI/DXGIAdapter.h"
 
+#include "Utilities/Utilities.h"
+
 
 //#include "DirectX12/Debug/D12Debug.h"
 
@@ -67,28 +69,28 @@ namespace Engine {
 			
 			if (i == 0) 
 			{
-				vertexData.color = { 1.0f,0.0f,0.0f,1.0f };
+				vertexData.color = { 1.0f,.5f,0.0f,1.0f };
 				vertexData.position = { -.35f,-.5f,0.0f };
 			}
 			else if (i == 1) 
 			{
-				vertexData.color = { 0.0f,1.0f,0.0f,1.0f };
+				vertexData.color = { 1.0f,0.3f,0.6f,1.0f };
 				vertexData.position = { 0.0f,.5f,0.0f };
 			} 
 			else 
 			{
-				vertexData.color = { 0.0f,0.0f,1.0f,1.0f };
+				vertexData.color = { 0.5f,1.0f,1.0f,1.0f };
 				vertexData.position = { .35f,-.5f,0.0f };
 			}
 			vertices.push_back(vertexData);
 		}
 		// *********************************************************
 
-		void* destination = nullptr;
+		//void* destination = nullptr;
 
-		mDynamicVertexBuffer->Map(0, 0, &destination);
-		memcpy(destination, vertices.data(), sizeof(Vertex) * vertices.size());
-		mDynamicVertexBuffer->Unmap(0, 0);
+		//mDynamicVertexBuffer->Map(0, 0, &destination);
+		memcpy(mDynamicVertexBuffer.GetCPUMemory(), vertices.data(), sizeof(Vertex) * vertices.size());
+		//mDynamicVertexBuffer->Unmap(0, 0);
 
 		mDynamicVBView.BufferLocation = mDynamicVertexBuffer.Get()->GetGPUVirtualAddress();
 		mDynamicVBView.StrideInBytes = sizeof(Vertex);
@@ -118,10 +120,26 @@ namespace Engine {
 		mSRRect.right = mViewport.Width;
 		mSRRect.top = 0;
 		mSRRect.bottom = mViewport.Height;
+
+
+		// View Proj Matrix
+		DirectX::XMMATRIX viewMatrix = DirectX::XMMatrixLookAtLH({ 0.f,1.f,-3.f,0.f }, { 0.f,0.f,0.f,0.f }, { 0.f,1.f,0.f,0.f });
+		                                                                     // FOV         // Aspect //NP  // View Dist
+		DirectX::XMMATRIX projectionMatrix = DirectX::XMMatrixPerspectiveFovLH(1.2217304764f, 16.f/9.f, 1.f, 50.f);
+
+		mViewProjectionMatrix = viewMatrix * projectionMatrix;
+
+
+		// const buffer must always align to 255 bytes, must be multiples of this
+		mCBPassData.Initialize(mDevice.Get(), Utils::CalculateConstantBufferAlignment(sizeof(PassData)), D3D12_HEAP_TYPE_UPLOAD, D3D12_RESOURCE_STATE_GENERIC_READ);
+
+
 	}
 
 	void RenderAPI::UpdateDraw()
 	{
+		memcpy(mCBPassData.GetCPUMemory(), &mViewProjectionMatrix, sizeof(PassData));
+
 		D3D12_RESOURCE_BARRIER barrier = {};
 		barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
 		barrier.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;

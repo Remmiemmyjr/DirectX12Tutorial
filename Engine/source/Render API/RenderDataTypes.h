@@ -13,6 +13,9 @@ namespace Engine {
 
 		};
 
+		struct PassData {
+			DirectX::XMMATRIX viewProj = DirectX::XMMatrixIdentity();
+		};
 
 	}
 
