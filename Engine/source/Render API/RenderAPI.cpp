@@ -164,6 +164,8 @@ namespace Engine {
 
 		mCommandList.GFXCmd()->IASetVertexBuffers(0, 1, &mDynamicVBView);
 
+		mCommandList.GFXCmd()->SetGraphicsRootConstantBufferView(0, mCBPassData.Get()->GetGPUVirtualAddress());
+
 			
 		// DRAWING STUFF HERE *******************************************************************
 		mCommandList.GFXCmd()->DrawInstanced(3, 1, 0, 0);
