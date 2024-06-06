@@ -14,7 +14,7 @@
 
 #include "DirectX12/Pipeline/D12PipelineState.h"
 #include "DirectX12/Descriptors/D12DescriptorHeap.h"
-
+#include "DirectX12/MemoryManagement/BufferUploader.h"
 
 
 namespace Engine {
@@ -48,11 +48,17 @@ namespace Engine {
 		D3D12_RECT mSRRect;
 
 		D12DescriptorHeap mDepthDescHeap;
+		BufferUploader mBufferUploader;
 		// **************************************
 
 
-		D12Resource mDynamicVertexBuffer;
-		D3D12_VERTEX_BUFFER_VIEW mDynamicVBView;
+		//D12Resource mDynamicVertexBuffer;
+		D12Resource mVertexBuffer;
+		D12Resource mIndexBuffer;
+
+		//D3D12_VERTEX_BUFFER_VIEW mDynamicVBView;
+		D3D12_VERTEX_BUFFER_VIEW mVBView;
+		D3D12_INDEX_BUFFER_VIEW mIBView;
 
 		D12Resource mCBPassData;
 
