@@ -61,23 +61,95 @@ namespace Engine {
 		mVertexBuffer.Initialize(mDevice.Get(), KBs(8), D3D12_HEAP_TYPE_DEFAULT, D3D12_RESOURCE_STATE_COMMON);
 		mVertexBuffer.Get()->SetName(L"Vertex buffer");
 
-#define G_BOX_VERTS 8
+#define G_BOX_VERTS 24
 		// CUBE | VBO ****************************************************
 		std::vector<Vertex> vertices;
 		Vertex verticesBox[G_BOX_VERTS];
 		verticesBox[0].position = { -1, 1, 1 };
-		verticesBox[1].position = { -1, -1, 1 };
-		verticesBox[2].position = { -1, 1, -1 };
-		verticesBox[3].position = { -1, -1, -1 };
+		verticesBox[0].normal = { 0, 1, 0 };
 
-		verticesBox[4].position = { 1, 1, 1 };
-		verticesBox[4].color = { 1.f, 0.f, 0.f, 1.f };
-		verticesBox[5].position = { 1, -1, 1 };
-		verticesBox[5].color = { 1.f, 0.f, 0.f, 1.f };
-		verticesBox[6].position = { 1, 1, -1 };
-		verticesBox[6].color = { 1.f, 0.f, 0.f, 1.f };
-		verticesBox[7].position = { 1, -1, -1 };
-		verticesBox[7].color = { 1.f, 0.f, 0.f, 1.f };
+		verticesBox[1].position = { -1, 1, -1 };
+		verticesBox[1].normal = { 0, 1, 0 };
+
+		verticesBox[2].position = { 1, 1, 1 };
+		verticesBox[2].normal = { 0, 1, 0 };
+
+
+
+		verticesBox[3].position = { -1, -1, -1 };
+		verticesBox[3].normal = { 0, 0, -1 };
+
+		verticesBox[4].position = { 1, -1, -1 };
+		verticesBox[4].normal = { 0, 0, -1 };
+
+		verticesBox[5].position = { -1, 1, -1 };
+		verticesBox[5].normal = { 0, 0, -1 };
+
+
+
+		verticesBox[6].position = { 1, -1, -1 };
+		verticesBox[6].normal = { 1, 0, 0 };
+
+		verticesBox[7].position = { 1, -1, 1 };
+		verticesBox[7].normal = { 1, 0, 0 };
+
+		verticesBox[8].position = { 1, 1, -1 };
+		verticesBox[8].normal = { 1, 0, 0 };
+
+
+
+		verticesBox[9].position = { 1, -1, 1 };
+		verticesBox[9].normal = { 0, -1, 0 };
+
+		verticesBox[10].position = { 1, -1, -1 };
+		verticesBox[10].normal = { 0, -1, 0 };
+
+		verticesBox[11].position = { -1, -1, 1 };
+		verticesBox[11].normal = { 0, -1, 0 };
+
+
+
+		verticesBox[12].position = { -1, -1, 1 };
+		verticesBox[12].normal = { -1, 0, 0 };
+
+		verticesBox[13].position = { -1, -1, -1 };
+		verticesBox[13].normal = { -1, 0, 0 };
+
+		verticesBox[14].position = { -1, 1, 1 };
+		verticesBox[14].normal = { -1, 0, 0 };
+
+
+
+		verticesBox[15].position = { 1, -1, 1 };
+		verticesBox[15].normal = { 0, 0, 1 };
+
+		verticesBox[16].position = { -1, -1, 1 };
+		verticesBox[16].normal = { 0, 0, 1 };
+
+		verticesBox[17].position = { 1, 1, 1 };
+		verticesBox[17].normal = { 0, 0, 1 };
+
+
+
+		// NEW VERTICES:
+		verticesBox[18].position = { 1, 1, -1 };
+		verticesBox[18].normal = { 0, 1, 0 };
+
+		verticesBox[19].position = { 1, 1, -1 };
+		verticesBox[19].normal = { 0, 0, -1 };
+
+		verticesBox[20].position = { 1, 1, 1 };
+		verticesBox[20].normal = { 1, 0, 0 };
+
+		verticesBox[21].position = { -1, -1, -1 };
+		verticesBox[21].normal = { 0, -1, 0 };
+
+		verticesBox[22].position = { -1, 1, -1 };
+		verticesBox[22].normal = { -1, 0, 0 };
+
+		verticesBox[23].position = { -1, 1, 1 };
+		verticesBox[23].normal = { 0, 0, -1 };
+
 
 
 		// Test Buffer Uploader
@@ -98,52 +170,52 @@ namespace Engine {
 		// INDEX BUFFER **************************************************
 		UINT32 indices[G_INDICES];
 		indices[0] = 0;
-		indices[1] = 2;
-		indices[2] = 4;
+		indices[1] = 1;
+		indices[2] = 2;
 
-		indices[3] = 2;
-		indices[4] = 7;
-		indices[5] = 3;
+		indices[3] = 3;
+		indices[4] = 4;
+		indices[5] = 5;
 
 		indices[6] = 6;
-		indices[7] = 5;
-		indices[8] = 7;
+		indices[7] = 7;
+		indices[8] = 8;
 
-		indices[9] = 1;
-		indices[10] = 7;
-		indices[11] = 5;
+		indices[9] = 9;
+		indices[10] = 10;
+		indices[11] = 11;
 
-		indices[12] = 0;
-		indices[13] = 3;
-		indices[14] = 1;
+		indices[12] = 12;
+		indices[13] = 13;
+		indices[14] = 14;
 
-		indices[15] = 4;
-		indices[16] = 1;
-		indices[17] = 5;
+		indices[15] = 15;
+		indices[16] = 16;
+		indices[17] = 17;
 
-		indices[18] = 4;
-		indices[19] = 6;
+		indices[18] = 1;
+		indices[19] = 18;
 		indices[20] = 2;
 
-		indices[21] = 2;
-		indices[22] = 6;
-		indices[23] = 7;
+		indices[21] = 4;
+		indices[22] = 19;
+		indices[23] = 5;
 
-		indices[24] = 6;
-		indices[25] = 4;
-		indices[26] = 5;
+		indices[24] = 7;
+		indices[25] = 20;
+		indices[26] = 8;
 
-		indices[27] = 6;
-		indices[28] = 4;
-		indices[29] = 5;
+		indices[27] = 10;
+		indices[28] = 21;
+		indices[29] = 11;
 
-		indices[30] = 1;
-		indices[31] = 3;
-		indices[32] = 7;
+		indices[30] = 13;
+		indices[31] = 22;
+		indices[32] = 14;
 
-		indices[33] = 0;
-		indices[34] = 2;
-		indices[35] = 3;
+		indices[33] = 16;
+		indices[34] = 23;
+		indices[35] = 17;
 
 		indices[36] = 4;
 		indices[37] = 0;
