@@ -275,6 +275,17 @@ namespace Engine {
 		// const buffer must always align to 255 bytes, must be multiples of this
 		mCBPassData.Initialize(mDevice.Get(), Utils::CalculateConstantBufferAlignment(sizeof(PassData)), D3D12_HEAP_TYPE_UPLOAD, D3D12_RESOURCE_STATE_GENERIC_READ);
 
+		
+		// Material Init
+		mMaterialBuffer1.Initialize(mDevice.Get(), Utils::CalculateConstantBufferAlignment(sizeof(MaterialCelShader)), D3D12_HEAP_TYPE_DEFAULT, D3D12_RESOURCE_STATE_COMMON);
+		mMaterialBuffer1->SetName(L"Material Constant Buffer 1");
+
+		MaterialCelShader material;
+		material.diffuseAlbedo = { 1.f, 0.f, .2f, 1.f };
+
+		mBufferUploader.Upload((D12Resource*)mMaterialBuffer1.GetAddressOf(), &material, sizeof(MaterialCelShader),
+			(D12CommandList*)mCommandList.GetAddressOf(), (D12CommandQueue*)mCommandQueue.GetAddressOf(),
+			D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER);
 	}
 
 	void RenderAPI::UpdateDraw()
@@ -310,6 +321,7 @@ namespace Engine {
 		mCommandList.GFXCmd()->IASetIndexBuffer(&mIBView);
 
 		mCommandList.GFXCmd()->SetGraphicsRootConstantBufferView(0, mCBPassData.Get()->GetGPUVirtualAddress());
+		mCommandList.GFXCmd()->SetGraphicsRootConstantBufferView(1, mMaterialBuffer1.Get()->GetGPUVirtualAddress());
 
 			
 		// DRAWING STUFF HERE *******************************************************************

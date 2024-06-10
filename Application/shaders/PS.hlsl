@@ -7,10 +7,17 @@ struct PS_INPUT //from the VS_OUTPUT
 };
 
 
+struct MaterialData
+{
+    float4 diffuseAlbedo;
+};
+
+ConstantBuffer<MaterialData> gMaterialData : register(b1);
+
+
 float4 main(PS_INPUT input) : SV_TARGET
 {
-
-   
-    return input.color;
+    return gMaterialData.diffuseAlbedo;
+    //return input.color;
 
 }

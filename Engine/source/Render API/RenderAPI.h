@@ -38,7 +38,9 @@ namespace Engine {
 		D12CommandQueue mCommandQueue;
 		D12CommandList mCommandList;
 
+
 		DXGISwapChain mSwapChain;
+
 
 		// Pipeline essentials ******************
 		D12PipelineState mBasePipeline;
@@ -52,15 +54,17 @@ namespace Engine {
 		// **************************************
 
 
-		//D12Resource mDynamicVertexBuffer;
 		D12Resource mVertexBuffer;
 		D12Resource mIndexBuffer;
+		D12Resource mMaterialBuffer1;
 
-		//D3D12_VERTEX_BUFFER_VIEW mDynamicVBView;
+
 		D3D12_VERTEX_BUFFER_VIEW mVBView;
 		D3D12_INDEX_BUFFER_VIEW mIBView;
 
+
 		D12Resource mCBPassData;
+
 
 		DirectX::XMMATRIX mViewProjectionMatrix;
 
