@@ -2,7 +2,7 @@ struct PS_INPUT //from the VS_OUTPUT
 {
 	
     float4 position : SV_POSITION;
-    float4 color : COLOR;
+    float3 normal : NORMAL;
 	
 };
 
@@ -26,7 +26,7 @@ struct PassData
     LightData light;
 };
 
-
+ConstantBuffer<PassData> gPassData : register(b0); // global
 ConstantBuffer<MaterialData> gMaterialData : register(b1);
 
 
