@@ -295,8 +295,8 @@ namespace Engine {
 
 	void RenderAPI::UpdateDraw()
 	{
-		memcpy(mCBPassData.GetCPUMemory(), &mViewProjectionMatrix, sizeof(PassData));
-		memcpy((BYTE*)mCBPassData.GetCPUMemory() + sizeof(PassData), &mLights[0], sizeof(Light));
+		memcpy(mCBPassData.GetCPUMemory(), &mViewProjectionMatrix, sizeof(PassData::viewProj));
+		memcpy((BYTE*)mCBPassData.GetCPUMemory() + sizeof(PassData::viewProj), &mLights[0], sizeof(Light));
 
 		D3D12_RESOURCE_BARRIER barrier = {};
 		barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;

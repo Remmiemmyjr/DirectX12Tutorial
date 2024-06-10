@@ -32,7 +32,27 @@ ConstantBuffer<MaterialData> gMaterialData : register(b1);
 
 float4 main(PS_INPUT input) : SV_TARGET
 {
-    return gMaterialData.diffuseAlbedo;
-    //return input.color;
-
+    float intensity;
+    float4 color;
+    
+    intensity = dot(gPassData.light.direction, input.normal);
+    
+    if(intensity > 0.9)
+    {
+        color = float4(1.f, 0.5f, 0.5f, 1.f);
+    }
+    else if(intensity > 0.5f)
+    {
+        color = float4(0.8f, 0.3f, 0.3f, 1.f);
+    }
+    else if (intensity > 0.25f)
+    {
+        color = float4(0.6f, 0.1f, 0.1f, 1.f);
+    }
+    else
+    {
+        color = float4(0.2f, 0.f, 0.f, 1.f);
+    }
+    
+    return color;
 }
