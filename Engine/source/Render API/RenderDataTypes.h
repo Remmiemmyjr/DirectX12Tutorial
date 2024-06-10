@@ -4,6 +4,12 @@
 
 namespace Engine {
 
+	struct Light {
+		DirectX::XMFLOAT3 position = { 0.f, 0.f, 0.f };
+		float strength = 0.f;
+		DirectX::XMFLOAT3 direction = { 0.f, 0.f, 0.f };
+		float padding = 0.f;
+	};
 
 	namespace Render {
 
@@ -19,6 +25,7 @@ namespace Engine {
 
 		struct PassData {
 			DirectX::XMMATRIX viewProj = DirectX::XMMatrixIdentity();
+			Light sceneLight;
 		};
 
 	}

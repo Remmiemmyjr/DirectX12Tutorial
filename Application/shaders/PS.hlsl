@@ -12,6 +12,21 @@ struct MaterialData
     float4 diffuseAlbedo;
 };
 
+struct LightData
+{
+    float3 position;
+    float strength;
+    float3 direction;
+    float padding;
+};
+
+struct PassData
+{
+    float4x4 viewProj;
+    LightData light;
+};
+
+
 ConstantBuffer<MaterialData> gMaterialData : register(b1);
 
 

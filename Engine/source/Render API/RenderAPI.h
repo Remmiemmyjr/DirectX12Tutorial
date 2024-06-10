@@ -64,6 +64,7 @@ namespace Engine {
 
 
 		D12Resource mCBPassData;
+		Light mLights[8];
 
 
 		DirectX::XMMATRIX mViewProjectionMatrix;

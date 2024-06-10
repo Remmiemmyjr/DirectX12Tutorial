@@ -286,11 +286,17 @@ namespace Engine {
 		mBufferUploader.Upload((D12Resource*)mMaterialBuffer1.GetAddressOf(), &material, sizeof(MaterialCelShader),
 			(D12CommandList*)mCommandList.GetAddressOf(), (D12CommandQueue*)mCommandQueue.GetAddressOf(),
 			D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER);
+
+
+		// Lights (overall directional light)
+		mLights[0].direction = { 0.f, -1.f, 0.f };
+		mLights[0].strength = 1.f;
 	}
 
 	void RenderAPI::UpdateDraw()
 	{
 		memcpy(mCBPassData.GetCPUMemory(), &mViewProjectionMatrix, sizeof(PassData));
+		memcpy((BYTE*)mCBPassData.GetCPUMemory() + sizeof(PassData), &mLights[0], sizeof(Light));
 
 		D3D12_RESOURCE_BARRIER barrier = {};
 		barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
