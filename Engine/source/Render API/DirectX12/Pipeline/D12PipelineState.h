@@ -21,9 +21,7 @@ namespace Engine {
 		D12RootSignature mRootSignature;
 		HLSLShader mShaders[2];
 
-
 	};
-
 
 }
 

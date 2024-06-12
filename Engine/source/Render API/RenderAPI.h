@@ -1,6 +1,5 @@
 #pragma once
-#include "EngineMin.h"
-#include <Windows.h>
+#include "pch.h"
 
 
 #include "RenderDataTypes.h"
@@ -54,20 +53,22 @@ namespace Engine {
 		// **************************************
 
 
-		D12Resource mVertexBuffer;
-		D12Resource mIndexBuffer;
-		D12Resource mMaterialBuffer1;
-
-
 		D3D12_VERTEX_BUFFER_VIEW mVBView;
 		D3D12_INDEX_BUFFER_VIEW mIBView;
 
 
+		DirectX::XMMATRIX mViewProjectionMatrix;
+
+
+		// SCENE RESOURCE
+		D12Resource mVertexBuffer;
+		D12Resource mIndexBuffer;
+		D12Resource mMaterialBuffer1;
+		std::vector<D12Resource> mObjTransforms;
+
 		D12Resource mCBPassData;
 		Light mLights[8];
 
-
-		DirectX::XMMATRIX mViewProjectionMatrix;
 
 	private: 
 		UINT mWidth = 0;

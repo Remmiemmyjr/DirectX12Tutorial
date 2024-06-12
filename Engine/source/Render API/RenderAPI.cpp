@@ -289,8 +289,18 @@ namespace Engine {
 
 
 		// Lights (overall directional light)
-		mLights[0].direction = { 0.f, -1.f, 0.f };
+		mLights[0].position = { 0.f, 0.f, 0.f };
+		mLights[0].direction = { 1.f, 1.f, 0.f };
 		mLights[0].strength = 1.f;
+
+
+		// OBJ TRANSFORMS
+		mObjTransforms.emplace_back(D12Resource());
+		mObjTransforms[mObjTransforms.size() - 1].Initialize(mDevice.Get(), Utils::CalculateConstantBufferAlignment(sizeof(ObjectData)), D3D12_HEAP_TYPE_UPLOAD, D3D12_RESOURCE_STATE_GENERIC_READ);
+
+		ObjectData tempData;
+
+		memcpy(mObjTransforms[mObjTransforms.size() - 1].GetCPUMemory(), &tempData, sizeof(ObjectData));
 	}
 
 	void RenderAPI::UpdateDraw()
@@ -327,7 +337,8 @@ namespace Engine {
 		mCommandList.GFXCmd()->IASetIndexBuffer(&mIBView);
 
 		mCommandList.GFXCmd()->SetGraphicsRootConstantBufferView(0, mCBPassData.Get()->GetGPUVirtualAddress());
-		mCommandList.GFXCmd()->SetGraphicsRootConstantBufferView(1, mMaterialBuffer1.Get()->GetGPUVirtualAddress());
+		mCommandList.GFXCmd()->SetGraphicsRootConstantBufferView(1, mObjTransforms[0].Get()->GetGPUVirtualAddress());
+		mCommandList.GFXCmd()->SetGraphicsRootConstantBufferView(2, mMaterialBuffer1.Get()->GetGPUVirtualAddress());
 
 			
 		// DRAWING STUFF HERE *******************************************************************
