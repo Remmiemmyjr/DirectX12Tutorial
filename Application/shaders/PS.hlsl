@@ -12,7 +12,6 @@ struct MaterialData
     float4 diffuseAlbedo;
 };
 
-
 struct LightData
 {
     float3 position;
@@ -21,16 +20,14 @@ struct LightData
     float padding;
 };
 
-
 struct PassData
 {
     float4x4 viewProj;
     LightData light;
 };
 
-
 ConstantBuffer<PassData> gPassData : register(b0); // global
-ConstantBuffer<MaterialData> gMaterialData : register(b2);
+ConstantBuffer<MaterialData> gMaterialData : register(b1);
 
 
 float4 main(PS_INPUT input) : SV_TARGET
@@ -57,5 +54,5 @@ float4 main(PS_INPUT input) : SV_TARGET
         color = float4(0.2f, 0.f, 0.f, 1.f);
     }
     
-    return color *  gMaterialData.diffuseAlbedo;
+    return color;
 }

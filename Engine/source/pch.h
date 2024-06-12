@@ -5,7 +5,6 @@
 
 
 #include <iostream>
-#include <vector>
 
 
 //DirectX headers:
