@@ -265,7 +265,7 @@ namespace Engine {
 
 
 		// View Proj Matrix                                       // CAMERA
-		DirectX::XMMATRIX viewMatrix = DirectX::XMMatrixLookAtLH({ 2.f,2.f,-3.f,0.f }, { 0.f,0.f,0.f,0.f }, { 0.f,1.f,0.f,0.f });
+		DirectX::XMMATRIX viewMatrix = DirectX::XMMatrixLookAtLH({ -2.f, 1.5f, -3.f, 0.f }, { 0.f,0.f,0.f,0.f }, { 0.f,1.f,0.f,0.f });
 		                                                                     // FOV         // Aspect //NP  // View Dist
 		DirectX::XMMATRIX projectionMatrix = DirectX::XMMatrixPerspectiveFovLH(1.2217304764f, 16.f/9.f, 1.f, 50.f);
 
@@ -289,8 +289,9 @@ namespace Engine {
 
 
 		// Lights (overall directional light)
-		mLights[0].direction = { 0.f, -1.f, 0.f };
+		mLights[0].position = { 0.f, 0.f, 0.f };
 		mLights[0].strength = 1.f;
+		mLights[0].direction = { -0.5f, 1.f, 0.f };
 	}
 
 	void RenderAPI::UpdateDraw()

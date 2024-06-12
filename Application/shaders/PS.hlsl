@@ -12,6 +12,7 @@ struct MaterialData
     float4 diffuseAlbedo;
 };
 
+
 struct LightData
 {
     float3 position;
@@ -20,11 +21,13 @@ struct LightData
     float padding;
 };
 
+
 struct PassData
 {
     float4x4 viewProj;
     LightData light;
 };
+
 
 ConstantBuffer<PassData> gPassData : register(b0); // global
 ConstantBuffer<MaterialData> gMaterialData : register(b1);
@@ -35,7 +38,7 @@ float4 main(PS_INPUT input) : SV_TARGET
     float intensity;
     float4 color;
     
-    intensity = dot(gPassData.light.direction, input.normal);
+    intensity = dot(gPassData.light.direction, normalize(input.normal));
     
     if(intensity > 0.9)
     {
@@ -43,16 +46,16 @@ float4 main(PS_INPUT input) : SV_TARGET
     }
     else if(intensity > 0.5f)
     {
-        color = float4(0.8f, 0.3f, 0.3f, 1.f);
+        color = float4(0.8f, 0.6f, 0.6f, 1.f);
     }
     else if (intensity > 0.25f)
     {
-        color = float4(0.6f, 0.1f, 0.1f, 1.f);
+        color = float4(0.6f, 0.4f, 0.4f, 1.f);
     }
     else
     {
-        color = float4(0.2f, 0.f, 0.f, 1.f);
+        color = float4(0.4f, 0.2f, 0.2f, 1.f);
     }
     
-    return color;
+    return color * gMaterialData.diffuseAlbedo;
 }

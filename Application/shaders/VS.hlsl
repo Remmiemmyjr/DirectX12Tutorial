@@ -34,7 +34,7 @@ VS_OUTPUT main(VS_INPUT input)
 {
     VS_OUTPUT output;
     output.position = mul(gPassData.viewProj, float4(input.position,1.f));
-    output.normal = input.normal;
+    output.normal = input.normal, 1.f;
     
     return output;
 }
