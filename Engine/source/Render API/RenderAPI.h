@@ -1,6 +1,5 @@
 #pragma once
-#include "EngineMin.h"
-#include <Windows.h>
+#include "pch.h"
 
 
 #include "RenderDataTypes.h"
@@ -62,6 +61,8 @@ namespace Engine {
 		D3D12_VERTEX_BUFFER_VIEW mVBView;
 		D3D12_INDEX_BUFFER_VIEW mIBView;
 
+		std::vector<D12Resource> mMaterialBuffers;
+		std::vector<D12Resource> mObjTransforms;
 
 		D12Resource mCBPassData;
 		Light mLights[8];

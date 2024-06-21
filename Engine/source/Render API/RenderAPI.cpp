@@ -265,9 +265,13 @@ namespace Engine {
 
 
 		// View Proj Matrix                                       // CAMERA
-		DirectX::XMMATRIX viewMatrix = DirectX::XMMatrixLookAtLH({ -2.f, 1.5f, -3.f, 0.f }, { 0.f,0.f,0.f,0.f }, { 0.f,1.f,0.f,0.f });
+		DirectX::XMMATRIX viewMatrix;
+		viewMatrix = DirectX::XMMatrixLookAtLH({ -8.0f, 3.5f,-8.0f,0.0f }, { 0.0f,0.0f,0.0f,0.0f }, { 0.0f,1.0f,0.0f,0.0f });
+		//DirectX::XMMatrixLookToLH({VEC3 pos},{VEC3 normalizedForward}, {VEC3 normalized updirection});
+		// 
 		                                                                     // FOV         // Aspect //NP  // View Dist
-		DirectX::XMMATRIX projectionMatrix = DirectX::XMMatrixPerspectiveFovLH(1.2217304764f, 16.f/9.f, 1.f, 50.f);
+		DirectX::XMMATRIX projectionMatrix;
+		projectionMatrix = DirectX::XMMatrixPerspectiveFovLH(1.2217304764f, 16.f / 9.f, 1.f, 50.f);
 
 		mViewProjectionMatrix = viewMatrix * projectionMatrix;
 
@@ -276,22 +280,83 @@ namespace Engine {
 		mCBPassData.Initialize(mDevice.Get(), Utils::CalculateConstantBufferAlignment(sizeof(PassData)), D3D12_HEAP_TYPE_UPLOAD, D3D12_RESOURCE_STATE_GENERIC_READ);
 
 		
-		// Material Init
-		mMaterialBuffer1.Initialize(mDevice.Get(), Utils::CalculateConstantBufferAlignment(sizeof(MaterialCelShader)), D3D12_HEAP_TYPE_DEFAULT, D3D12_RESOURCE_STATE_COMMON);
-		mMaterialBuffer1->SetName(L"Material Constant Buffer 1");
+		//material allocations
+		{
+			mMaterialBuffers.reserve(3);
 
-		MaterialCelShader material;
-		material.diffuseAlbedo = { 1.f, 0.f, .2f, 1.f };
+			mMaterialBuffers.emplace_back(D12Resource());
+			mMaterialBuffers[0].Initialize(mDevice.Get(), Utils::CalculateConstantBufferAlignment(sizeof(MaterialCelShader)), D3D12_HEAP_TYPE_DEFAULT, D3D12_RESOURCE_STATE_COMMON);
+			mMaterialBuffers[0]->SetName(L"Material CB 1");
 
-		mBufferUploader.Upload((D12Resource*)mMaterialBuffer1.GetAddressOf(), &material, sizeof(MaterialCelShader),
-			(D12CommandList*)mCommandList.GetAddressOf(), (D12CommandQueue*)mCommandQueue.GetAddressOf(),
-			D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER);
+			MaterialCelShader material;
+			material.diffuseAlbedo = { .65f,0.0f,0.025f,1.0f };
+
+			mBufferUploader.Upload((D12Resource*)mMaterialBuffers[0].GetAddressOf(), &material, sizeof(MaterialCelShader),
+				(D12CommandList*)mCommandList.GetAddressOf(), (D12CommandQueue*)mCommandQueue.GetAddressOf(), D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER);
+
+			mMaterialBuffers.emplace_back(D12Resource());
+			mMaterialBuffers[1].Initialize(mDevice.Get(), Utils::CalculateConstantBufferAlignment(sizeof(MaterialCelShader)), D3D12_HEAP_TYPE_DEFAULT, D3D12_RESOURCE_STATE_COMMON);
+			mMaterialBuffers[1]->SetName(L"Material CB 2");
+
+			material;
+			material.diffuseAlbedo = { .0f,0.0f,0.80f,1.0f };
+
+			mBufferUploader.Upload((D12Resource*)mMaterialBuffers[1].GetAddressOf(), &material, sizeof(MaterialCelShader),
+				(D12CommandList*)mCommandList.GetAddressOf(), (D12CommandQueue*)mCommandQueue.GetAddressOf(), D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER);
+
+
+			mMaterialBuffers.emplace_back(D12Resource());
+			mMaterialBuffers[2].Initialize(mDevice.Get(), Utils::CalculateConstantBufferAlignment(sizeof(MaterialCelShader)), D3D12_HEAP_TYPE_DEFAULT, D3D12_RESOURCE_STATE_COMMON);
+			mMaterialBuffers[2]->SetName(L"Material CB 3 (floor)");
+
+			material;
+			material.diffuseAlbedo = { .3f,0.3f,0.3f,1.0f };
+
+			mBufferUploader.Upload((D12Resource*)mMaterialBuffers[2].GetAddressOf(), &material, sizeof(MaterialCelShader),
+				(D12CommandList*)mCommandList.GetAddressOf(), (D12CommandQueue*)mCommandQueue.GetAddressOf(), D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER);
+		}
 
 
 		// Lights (overall directional light)
 		mLights[0].position = { 0.f, 0.f, 0.f };
 		mLights[0].strength = 1.f;
-		mLights[0].direction = { -0.5f, 1.f, 0.f };
+		mLights[0].direction = { -.5f, 1.f, 0.f };
+
+
+		//Transform allocations
+		{
+
+			mObjTransforms.reserve(3);
+			mObjTransforms.emplace_back(D12Resource());
+			mObjTransforms[0].Initialize(mDevice.Get(), Utils::CalculateConstantBufferAlignment(sizeof(ObjectData)), D3D12_HEAP_TYPE_UPLOAD, D3D12_RESOURCE_STATE_GENERIC_READ);
+			mObjTransforms[0]->SetName(L"Transform 1 CB");
+
+			ObjectData tempData;
+			memcpy(mObjTransforms[0].GetCPUMemory(), &tempData, sizeof(ObjectData));
+
+			mObjTransforms.emplace_back(D12Resource());
+			mObjTransforms[1].Initialize(mDevice.Get(), Utils::CalculateConstantBufferAlignment(sizeof(ObjectData)), D3D12_HEAP_TYPE_UPLOAD, D3D12_RESOURCE_STATE_GENERIC_READ);
+			mObjTransforms[1]->SetName(L"Transform 2 CB");
+			tempData.transform.r[0] = { .3f,0.0f,1.0f,0.0f };
+
+			tempData.transform.r[3] = { -3.0f,0.0f,-2.0f,0.0f };
+
+
+			memcpy(mObjTransforms[1].GetCPUMemory(), &tempData, sizeof(ObjectData));
+
+			mObjTransforms.emplace_back(D12Resource());
+			mObjTransforms[2].Initialize(mDevice.Get(), Utils::CalculateConstantBufferAlignment(sizeof(ObjectData)), D3D12_HEAP_TYPE_UPLOAD, D3D12_RESOURCE_STATE_GENERIC_READ);
+			mObjTransforms[2]->SetName(L"Transform 3 CB (floor)");
+
+			tempData.transform = DirectX::XMMatrixIdentity();
+
+			tempData.transform.r[0] = { 1000.0f,0.0,0.0,0.0f };
+			tempData.transform.r[1] = { 0.0,0.3f,0.0,0.0f };
+			tempData.transform.r[2] = { 0.0,0.0,1000.0f,0.0f };
+			tempData.transform.r[3] = { 0.0f,-4.0f,0.0f,1.0f };
+
+			memcpy(mObjTransforms[2].GetCPUMemory(), &tempData, sizeof(ObjectData));
+		}
 	}
 
 	void RenderAPI::UpdateDraw()
@@ -327,13 +392,41 @@ namespace Engine {
 		mCommandList.GFXCmd()->IASetVertexBuffers(0, 1, &mVBView);
 		mCommandList.GFXCmd()->IASetIndexBuffer(&mIBView);
 
-		mCommandList.GFXCmd()->SetGraphicsRootConstantBufferView(0, mCBPassData.Get()->GetGPUVirtualAddress());
-		mCommandList.GFXCmd()->SetGraphicsRootConstantBufferView(1, mMaterialBuffer1.Get()->GetGPUVirtualAddress());
+		//mCommandList.GFXCmd()->SetGraphicsRootConstantBufferView(0, mCBPassData.Get()->GetGPUVirtualAddress());
+		//mCommandList.GFXCmd()->SetGraphicsRootConstantBufferView(1, mMaterialBuffer1.Get()->GetGPUVirtualAddress());
 
 			
 		// DRAWING STUFF HERE *******************************************************************
 		//mCommandList.GFXCmd()->DrawInstanced(G_BOX_VERTS, 1, 0, 0);
-		mCommandList.GFXCmd()->DrawIndexedInstanced(G_INDICES, 1, 0, 0, 0);
+		//mCommandList.GFXCmd()->DrawIndexedInstanced(G_INDICES, 1, 0, 0, 0);
+		{
+			mCommandList.GFXCmd()->SetGraphicsRootConstantBufferView(0, mCBPassData.Get()->GetGPUVirtualAddress());
+			mCommandList.GFXCmd()->SetGraphicsRootConstantBufferView(1, mObjTransforms[0].Get()->GetGPUVirtualAddress());
+			mCommandList.GFXCmd()->SetGraphicsRootConstantBufferView(2, mMaterialBuffers[0].Get()->GetGPUVirtualAddress());
+
+
+			mCommandList.GFXCmd()->DrawIndexedInstanced(G_INDICES, 1, 0, 0, 0);
+		}
+
+
+		{
+			mCommandList.GFXCmd()->SetGraphicsRootConstantBufferView(0, mCBPassData.Get()->GetGPUVirtualAddress());
+			mCommandList.GFXCmd()->SetGraphicsRootConstantBufferView(1, mObjTransforms[1].Get()->GetGPUVirtualAddress());
+			mCommandList.GFXCmd()->SetGraphicsRootConstantBufferView(2, mMaterialBuffers[1].Get()->GetGPUVirtualAddress());
+
+
+			mCommandList.GFXCmd()->DrawIndexedInstanced(G_INDICES, 1, 0, 0, 0);
+		}
+
+		//draw a floor
+		{
+			mCommandList.GFXCmd()->SetGraphicsRootConstantBufferView(0, mCBPassData.Get()->GetGPUVirtualAddress());
+			mCommandList.GFXCmd()->SetGraphicsRootConstantBufferView(1, mObjTransforms[2].Get()->GetGPUVirtualAddress());
+			mCommandList.GFXCmd()->SetGraphicsRootConstantBufferView(2, mMaterialBuffers[2].Get()->GetGPUVirtualAddress());
+
+
+			mCommandList.GFXCmd()->DrawIndexedInstanced(G_INDICES, 1, 0, 0, 0);
+		}
 		
 		// **************************************************************************************
 
@@ -364,21 +457,38 @@ namespace Engine {
 
 	void RenderAPI::Release()
 	{
-		mVertexBuffer.Release();
 
 		mCommandQueue.FlushQueue();
-	
-		mSwapChain.Release();
-		
-		mCommandList.Release();
 
+		for (int i = 0; i < mMaterialBuffers.size(); i++) 
+		{
+			mMaterialBuffers[i].Release();
+		}
+
+		for (int i = 0; i < mObjTransforms.size(); i++) 
+		{
+			mObjTransforms[i].Release();
+		}
+
+
+		mVertexBuffer.Release();
+		mIndexBuffer.Release();
+		mCBPassData.Release();
+
+		mBasePipeline.Release();
+		mDepthDescHeap.Release();
+		mDepthBuffer.Release();
+
+		mBufferUploader.Release();
+
+		mSwapChain.Release();
+		mCommandList.Release();
 		mCommandQueue.Release();
 
 
-		if (mDevice.Get()) {
-
+		if (mDevice.Get()) 
+		{
 			mDevice.Reset();
-
 		}
 	}
 

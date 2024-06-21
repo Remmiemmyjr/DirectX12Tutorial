@@ -9,8 +9,6 @@ namespace Engine {
 
 		void InitializeDepthHeap(ID3D12Device* pDevice);
 
-	private:
-
 		void Release();
 	};
 }
