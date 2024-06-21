@@ -9,7 +9,7 @@
 #include "Utilities/Utilities.h"
 
 
-//#include "DirectX12/Debug/D12Debug.h"
+#include <Windowsx.h> // for mouse macros
 
 
 
@@ -18,7 +18,7 @@
 namespace Engine {
 	using namespace Render;
 
-
+	
 	RenderAPI::~RenderAPI()
 	{
 		Release();
