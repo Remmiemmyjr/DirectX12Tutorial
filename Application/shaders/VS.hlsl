@@ -1,6 +1,6 @@
 struct VS_INPUT
 {
-    float3 position : POSITION;
+    float3 position : POSITION; // "semantic", used to specify the purpose of a variable. helps the GPU understand how to process and use this data.
     float3 normal : NORMAL;
 };
 
