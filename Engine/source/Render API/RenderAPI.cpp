@@ -325,7 +325,6 @@ namespace Engine {
 
 		//Transform allocations
 		{
-
 			mObjTransforms.reserve(3);
 			mObjTransforms.emplace_back(D12Resource());
 			mObjTransforms[0].Initialize(mDevice.Get(), Utils::CalculateConstantBufferAlignment(sizeof(ObjectData)), D3D12_HEAP_TYPE_UPLOAD, D3D12_RESOURCE_STATE_GENERIC_READ);

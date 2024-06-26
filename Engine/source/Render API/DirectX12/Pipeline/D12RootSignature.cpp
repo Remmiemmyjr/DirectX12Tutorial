@@ -11,9 +11,8 @@ namespace Engine {
 	}
 	void D12RootSignature::Initialize(ID3D12Device* pDevice)
 	{
-		
 		//b0 (t0) registerspace for a ConstantBuffer
-		D3D12_ROOT_PARAMETER rootParameter[3];
+		D3D12_ROOT_PARAMETER rootParameter[4];
 		//pass data
 		rootParameter[0].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;
 		rootParameter[0].Descriptor.ShaderRegister = 0;
@@ -31,6 +30,17 @@ namespace Engine {
 		rootParameter[2].Descriptor.ShaderRegister = 2;
 		rootParameter[2].Descriptor.RegisterSpace = 0;
 		rootParameter[2].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
+
+
+
+		// compute? !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+		rootParameter[3].ParameterType = D3D12_ROOT_PARAMETER_TYPE_UAV;
+		rootParameter[3].Descriptor.ShaderRegister = 3;
+		rootParameter[3].Descriptor.RegisterSpace = 0;
+		rootParameter[3].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
+		// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+
 
 		D3D12_VERSIONED_ROOT_SIGNATURE_DESC rsDesc = { };
 		rsDesc.Version = D3D_ROOT_SIGNATURE_VERSION_1_0;
