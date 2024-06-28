@@ -26,6 +26,11 @@ namespace Engine {
 			target = "ps_5_1";
 			break;
 		}
+		case ShaderType::COMPUTE: {
+
+			target = "cs_5_1";
+			break;
+		}
 
 		default: {
 

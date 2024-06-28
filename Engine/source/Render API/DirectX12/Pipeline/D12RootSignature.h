@@ -15,8 +15,5 @@ namespace Engine {
 
 		void Release();
 	};
-
-
-
 }
 

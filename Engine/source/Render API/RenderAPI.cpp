@@ -53,6 +53,31 @@ namespace Engine {
 
 		// Swap Chain
 		mSwapChain.Initialize(mDevice.Get(), factory.Get(), mCommandQueue.Get(), hwnd, mWidth, mHeight);
+		// Setting up swapchain
+		mDepthBuffer.InitializeAsDepthBuffer(mDevice.Get(), mWidth, mHeight);
+
+		mDepthDescHeap.InitializeDepthHeap(mDevice.Get());
+
+		D3D12_DEPTH_STENCIL_VIEW_DESC dsvDesc = {};
+		dsvDesc.Format = DXGI_FORMAT_D32_FLOAT;
+		dsvDesc.ViewDimension = D3D12_DSV_DIMENSION_TEXTURE2D;
+		dsvDesc.Texture2D.MipSlice = 0;
+		dsvDesc.Flags = D3D12_DSV_FLAG_NONE;
+		mDevice->CreateDepthStencilView(mDepthBuffer.Get(), &dsvDesc, mDepthDescHeap.Get()->GetCPUDescriptorHandleForHeapStart());
+
+		// Viewport param init
+		mViewport.TopLeftX = 0;
+		mViewport.TopLeftY = 0;
+		mViewport.Width = mWidth;
+		mViewport.Height = mHeight;
+		mViewport.MinDepth = 0.0f;
+		mViewport.MaxDepth = 1.0f;
+
+		// Scissor Rect param init
+		mSRRect.left = 0;
+		mSRRect.right = mViewport.Width;
+		mSRRect.top = 0;
+		mSRRect.bottom = mViewport.Height;
 
 		// Buffer Uploader
 		mBufferUploader.Initialize(mDevice.Get(), KBs(64));
@@ -236,32 +261,8 @@ namespace Engine {
 
 		// ***************************************************************
 
+
 		mBasePipeline.Initialize(mDevice.Get());
-
-		mDepthBuffer.InitializeAsDepthBuffer(mDevice.Get(), mWidth, mHeight);
-
-		mDepthDescHeap.InitializeDepthHeap(mDevice.Get());
-
-		D3D12_DEPTH_STENCIL_VIEW_DESC dsvDesc = {};
-		dsvDesc.Format = DXGI_FORMAT_D32_FLOAT;
-		dsvDesc.ViewDimension = D3D12_DSV_DIMENSION_TEXTURE2D;
-		dsvDesc.Texture2D.MipSlice = 0;
-		dsvDesc.Flags = D3D12_DSV_FLAG_NONE;
-		mDevice->CreateDepthStencilView(mDepthBuffer.Get(), &dsvDesc, mDepthDescHeap.Get()->GetCPUDescriptorHandleForHeapStart());
-
-		// Viewport param init
-		mViewport.TopLeftX = 0;
-		mViewport.TopLeftY = 0;
-		mViewport.Width = mWidth;
-		mViewport.Height = mHeight;
-		mViewport.MinDepth = 0.0f;
-		mViewport.MaxDepth = 1.0f;
-
-		// Scissor Rect param init
-		mSRRect.left = 0;
-		mSRRect.right = mViewport.Width;
-		mSRRect.top = 0;
-		mSRRect.bottom = mViewport.Height;
 
 
 		// View Proj Matrix                                       // CAMERA
@@ -356,6 +357,9 @@ namespace Engine {
 
 			memcpy(mObjTransforms[2].GetCPUMemory(), &tempData, sizeof(ObjectData));
 		}
+
+		mComputePipeline.Initialize(mDevice.Get());
+
 	}
 
 	void RenderAPI::UpdateDraw()
@@ -391,8 +395,10 @@ namespace Engine {
 		mCommandList.GFXCmd()->IASetVertexBuffers(0, 1, &mVBView);
 		mCommandList.GFXCmd()->IASetIndexBuffer(&mIBView);
 
-		//mCommandList.GFXCmd()->SetGraphicsRootConstantBufferView(0, mCBPassData.Get()->GetGPUVirtualAddress());
-		//mCommandList.GFXCmd()->SetGraphicsRootConstantBufferView(1, mMaterialBuffer1.Get()->GetGPUVirtualAddress());
+
+
+		mCommandList.GFXCmd()->SetComputeRootUnorderedAccessView(0, mVertexBuffer->GetGPUVirtualAddress()); // !!! added for compute shader !!!
+
 
 			
 		// DRAWING STUFF HERE *******************************************************************
@@ -403,7 +409,6 @@ namespace Engine {
 			mCommandList.GFXCmd()->SetGraphicsRootConstantBufferView(1, mObjTransforms[0].Get()->GetGPUVirtualAddress());
 			mCommandList.GFXCmd()->SetGraphicsRootConstantBufferView(2, mMaterialBuffers[0].Get()->GetGPUVirtualAddress());
 
-
 			mCommandList.GFXCmd()->DrawIndexedInstanced(G_INDICES, 1, 0, 0, 0);
 		}
 
@@ -413,16 +418,15 @@ namespace Engine {
 			mCommandList.GFXCmd()->SetGraphicsRootConstantBufferView(1, mObjTransforms[1].Get()->GetGPUVirtualAddress());
 			mCommandList.GFXCmd()->SetGraphicsRootConstantBufferView(2, mMaterialBuffers[1].Get()->GetGPUVirtualAddress());
 
-
 			mCommandList.GFXCmd()->DrawIndexedInstanced(G_INDICES, 1, 0, 0, 0);
 		}
+
 
 		//draw a floor
 		{
 			mCommandList.GFXCmd()->SetGraphicsRootConstantBufferView(0, mCBPassData.Get()->GetGPUVirtualAddress());
 			mCommandList.GFXCmd()->SetGraphicsRootConstantBufferView(1, mObjTransforms[2].Get()->GetGPUVirtualAddress());
 			mCommandList.GFXCmd()->SetGraphicsRootConstantBufferView(2, mMaterialBuffers[2].Get()->GetGPUVirtualAddress());
-
 
 			mCommandList.GFXCmd()->DrawIndexedInstanced(G_INDICES, 1, 0, 0, 0);
 		}
@@ -454,9 +458,9 @@ namespace Engine {
 		mCommandList.ResetCommandList();
 	}
 
+
 	void RenderAPI::Release()
 	{
-
 		mCommandQueue.FlushQueue();
 
 		for (int i = 0; i < mMaterialBuffers.size(); i++) 
@@ -490,5 +494,4 @@ namespace Engine {
 			mDevice.Reset();
 		}
 	}
-
 }

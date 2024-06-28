@@ -12,6 +12,7 @@
 #include "DirectX12/Resource/D12Resource.h"
 
 #include "DirectX12/Pipeline/D12PipelineState.h"
+#include "DirectX12/Pipeline/D12ComputePipeline.h"
 #include "DirectX12/Descriptors/D12DescriptorHeap.h"
 #include "DirectX12/MemoryManagement/BufferUploader.h"
 
@@ -43,6 +44,7 @@ namespace Engine {
 
 		// Pipeline essentials ******************
 		D12PipelineState mBasePipeline;
+		D12ComputePipeline mComputePipeline;
 		D12Resource mDepthBuffer;
 
 		D3D12_VIEWPORT mViewport;

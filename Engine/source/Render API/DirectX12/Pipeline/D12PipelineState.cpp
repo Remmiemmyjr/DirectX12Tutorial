@@ -6,8 +6,6 @@
 
 namespace Engine {
 
-
-
 	D12PipelineState::~D12PipelineState()
 	{
 		Release();
@@ -15,7 +13,6 @@ namespace Engine {
 
 	void D12PipelineState::Initialize(ID3D12Device* pDevice)
 	{
-
 		mRootSignature.Initialize(pDevice);
 		mShaders[0].Initialize(L"shaders/VS.hlsl", HLSLShader::ShaderType::VERTEX);
 		mShaders[1].Initialize(L"shaders/PS.hlsl", HLSLShader::ShaderType::PIXEL);

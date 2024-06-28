@@ -10,7 +10,7 @@ namespace Engine {
 		enum ShaderType {
 			VERTEX,
 			PIXEL,
-
+			COMPUTE
 
 		};
 	public:
@@ -22,7 +22,6 @@ namespace Engine {
 		void Release();
 		
 		inline ID3DBlob* GetByteBlob() { return mByteCode; }
-
 
 	private:
 

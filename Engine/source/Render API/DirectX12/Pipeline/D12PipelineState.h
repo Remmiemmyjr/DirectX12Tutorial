@@ -20,8 +20,6 @@ namespace Engine {
 	private:
 		D12RootSignature mRootSignature;
 		HLSLShader mShaders[2];
-
-
 	};
 
 
