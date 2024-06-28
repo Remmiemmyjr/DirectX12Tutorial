@@ -27,10 +27,10 @@ namespace Engine {
 		resourceDesc.Format = DXGI_FORMAT_UNKNOWN;
 		resourceDesc.SampleDesc = { 1,0 };
 		resourceDesc.Layout = D3D12_TEXTURE_LAYOUT_ROW_MAJOR;
-		resourceDesc.Flags = D3D12_RESOURCE_FLAG_ALLOW_UNORDERED_ACCESS; //!!!!!changed for compute shader!!!!!
+		resourceDesc.Flags = D3D12_RESOURCE_FLAG_NONE;
 
-																								  //initialState
-		YT_EVAL_HR(pDevice->CreateCommittedResource(&heapProp, D3D12_HEAP_FLAG_NONE, &resourceDesc, D3D12_RESOURCE_STATE_UNORDERED_ACCESS, 0, IID_PPV_ARGS(GetAddressOf())), "Error creating a resource");
+																								  //D3D12_RESOURCE_STATE_UNORDERED_ACCESS
+		YT_EVAL_HR(pDevice->CreateCommittedResource(&heapProp, D3D12_HEAP_FLAG_NONE, &resourceDesc, initialState, 0, IID_PPV_ARGS(GetAddressOf())), "Error creating a resource");
 	}
 
 	void D12Resource::InitializeAsDepthBuffer(ID3D12Device* pDevice, const unsigned int width, const unsigned int height)
@@ -64,6 +64,36 @@ namespace Engine {
 
 	}
 
+	void D12Resource::InitializeAs2D(ID3D12Device* pDevice, const unsigned int width, const unsigned int height)
+	{
+		D3D12_HEAP_PROPERTIES heapProp = {};
+		heapProp.Type = D3D12_HEAP_TYPE_DEFAULT;
+		heapProp.CPUPageProperty = D3D12_CPU_PAGE_PROPERTY_UNKNOWN;
+		heapProp.MemoryPoolPreference = D3D12_MEMORY_POOL_UNKNOWN;
+		heapProp.CreationNodeMask = 0;
+		heapProp.VisibleNodeMask = 0;
+
+		// Texture
+		D3D12_RESOURCE_DESC resDesc = {};
+		resDesc.Dimension = D3D12_RESOURCE_DIMENSION_TEXTURE2D;
+		resDesc.Alignment = 0;
+		resDesc.Width = width;
+		resDesc.Height = height;
+		resDesc.DepthOrArraySize = 1;
+		resDesc.MipLevels = 0;
+		resDesc.Format = DXGI_FORMAT_D32_FLOAT;
+		resDesc.SampleDesc = { 1,0 };
+		resDesc.Layout = D3D12_TEXTURE_LAYOUT_UNKNOWN;
+		resDesc.Flags = D3D12_RESOURCE_FLAG_ALLOW_DEPTH_STENCIL;
+
+		D3D12_CLEAR_VALUE clearVal = {};
+		clearVal.Format = DXGI_FORMAT_D32_FLOAT;
+		clearVal.DepthStencil.Depth = 1.f;
+		clearVal.DepthStencil.Stencil = 0.f;
+
+		YT_EVAL_HR(pDevice->CreateCommittedResource(&heapProp, D3D12_HEAP_FLAG_NONE, &resDesc, D3D12_RESOURCE_STATE_DEPTH_WRITE, &clearVal, IID_PPV_ARGS(GetAddressOf())), "Error creating a depth buffer");
+	}
+
 	void D12Resource::Release()
 	{
 		if (mMemory && Get())
@@ -88,6 +118,4 @@ namespace Engine {
 
 		return mMemory;
 	}
-
-
 }
