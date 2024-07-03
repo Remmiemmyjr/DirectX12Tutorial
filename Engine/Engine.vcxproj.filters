@@ -78,6 +78,12 @@
     <ClInclude Include="source\Render API\DirectX12\Pipeline\D12ComputePipeline.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="source\Render API\DirectX12\Pipeline\ComputeRootSignature.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Render API\DirectX12\Descriptors\UAV.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\pch.cpp">
@@ -129,6 +135,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="source\Render API\DirectX12\Pipeline\D12ComputePipeline.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="source\Render API\DirectX12\Pipeline\ComputeRootSignature.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="source\Render API\DirectX12\Descriptors\UAV.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

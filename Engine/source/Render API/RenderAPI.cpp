@@ -56,7 +56,11 @@ namespace Engine {
 		// Setting up swapchain
 		mDepthBuffer.InitializeAsDepthBuffer(mDevice.Get(), mWidth, mHeight);
 
+		// DESC HEAPS
 		mDepthDescHeap.InitializeDepthHeap(mDevice.Get());
+		mTexDescHeap.InitializeTextureHeap(mDevice.Get());
+		ID3D12DescriptorHeap* descriptorHeaps[] = { mDepthDescHeap.Get(), mTexDescHeap.Get() };
+
 
 		D3D12_DEPTH_STENCIL_VIEW_DESC dsvDesc = {};
 		dsvDesc.Format = DXGI_FORMAT_D32_FLOAT;
@@ -359,7 +363,10 @@ namespace Engine {
 		}
 
 		mComputePipeline.Initialize(mDevice.Get());
-
+		//- Bind the texture as render target and render to it.
+		//- Unbind it as a render target and Bind it as a shader resource and use it in the next shader.
+        //- Just note that a texture cannot be bound as a target and a resource at the same time.
+		//- Need resource Buffers to help w transition
 	}
 
 	void RenderAPI::UpdateDraw()

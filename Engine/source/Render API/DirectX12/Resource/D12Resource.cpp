@@ -7,9 +7,9 @@ namespace Engine {
 	{
 		Release();
 	}
+
 	void D12Resource::Initialize(ID3D12Device* pDevice, const unsigned int numBytes, D3D12_HEAP_TYPE heapType, D3D12_RESOURCE_STATES initialState)
 	{
-
 		D3D12_HEAP_PROPERTIES heapProp = {};
 		heapProp.Type = heapType;
 		heapProp.CPUPageProperty = D3D12_CPU_PAGE_PROPERTY_UNKNOWN;
@@ -43,28 +43,27 @@ namespace Engine {
 		heapProp.VisibleNodeMask = 0;
 
 		// Texture
-		D3D12_RESOURCE_DESC resDesc = {};
-		resDesc.Dimension = D3D12_RESOURCE_DIMENSION_TEXTURE2D;
-		resDesc.Alignment = 0;
-		resDesc.Width = width;
-		resDesc.Height = height;
-		resDesc.DepthOrArraySize = 1;
-		resDesc.MipLevels = 0;
-		resDesc.Format = DXGI_FORMAT_D32_FLOAT;
-		resDesc.SampleDesc = { 1,0 };
-		resDesc.Layout = D3D12_TEXTURE_LAYOUT_UNKNOWN;
-		resDesc.Flags = D3D12_RESOURCE_FLAG_ALLOW_DEPTH_STENCIL;
+		D3D12_RESOURCE_DESC texDesc = {};
+		texDesc.Dimension = D3D12_RESOURCE_DIMENSION_TEXTURE2D;
+		texDesc.Alignment = 0;
+		texDesc.Width = width;
+		texDesc.Height = height;
+		texDesc.DepthOrArraySize = 1;
+		texDesc.MipLevels = 0;
+		texDesc.Format = DXGI_FORMAT_D32_FLOAT;
+		texDesc.SampleDesc = { 1,0 };
+		texDesc.Layout = D3D12_TEXTURE_LAYOUT_UNKNOWN;
+		texDesc.Flags = D3D12_RESOURCE_FLAG_ALLOW_DEPTH_STENCIL;
 
 		D3D12_CLEAR_VALUE clearVal = {};
-		clearVal.Format = DXGI_FORMAT_D32_FLOAT;
+		clearVal.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
 		clearVal.DepthStencil.Depth = 1.f;
 		clearVal.DepthStencil.Stencil = 0.f;
 
-		YT_EVAL_HR(pDevice->CreateCommittedResource(&heapProp, D3D12_HEAP_FLAG_NONE,&resDesc, D3D12_RESOURCE_STATE_DEPTH_WRITE, &clearVal, IID_PPV_ARGS(GetAddressOf())), "Error creating a depth buffer");
-
+		YT_EVAL_HR(pDevice->CreateCommittedResource(&heapProp, D3D12_HEAP_FLAG_NONE,&texDesc, D3D12_RESOURCE_STATE_DEPTH_WRITE, &clearVal, IID_PPV_ARGS(GetAddressOf())), "Error creating a depth buffer");
 	}
 
-	void D12Resource::InitializeAs2D(ID3D12Device* pDevice, const unsigned int width, const unsigned int height)
+	void D12Resource::InitializeAs2DTexture(ID3D12Device* pDevice, const unsigned int width, const unsigned int height)
 	{
 		D3D12_HEAP_PROPERTIES heapProp = {};
 		heapProp.Type = D3D12_HEAP_TYPE_DEFAULT;
@@ -81,10 +80,10 @@ namespace Engine {
 		resDesc.Height = height;
 		resDesc.DepthOrArraySize = 1;
 		resDesc.MipLevels = 0;
-		resDesc.Format = DXGI_FORMAT_D32_FLOAT;
+		resDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
 		resDesc.SampleDesc = { 1,0 };
 		resDesc.Layout = D3D12_TEXTURE_LAYOUT_UNKNOWN;
-		resDesc.Flags = D3D12_RESOURCE_FLAG_ALLOW_DEPTH_STENCIL;
+		resDesc.Flags = D3D12_RESOURCE_FLAG_ALLOW_RENDER_TARGET | D3D12_RESOURCE_FLAG_ALLOW_UNORDERED_ACCESS;;
 
 		D3D12_CLEAR_VALUE clearVal = {};
 		clearVal.Format = DXGI_FORMAT_D32_FLOAT;

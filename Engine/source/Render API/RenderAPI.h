@@ -51,6 +51,7 @@ namespace Engine {
 		D3D12_RECT mSRRect;
 
 		D12DescriptorHeap mDepthDescHeap;
+		D12DescriptorHeap mTexDescHeap;
 		BufferUploader mBufferUploader;
 		// **************************************
 
@@ -58,6 +59,7 @@ namespace Engine {
 		D12Resource mVertexBuffer;
 		D12Resource mIndexBuffer;
 		D12Resource mMaterialBuffer1;
+		D12Resource mTexture;
 
 
 		D3D12_VERTEX_BUFFER_VIEW mVBView;

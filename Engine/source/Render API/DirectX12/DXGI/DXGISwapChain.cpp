@@ -62,7 +62,6 @@ namespace Engine {
 			cpuHandle.ptr += (size_t)mHeapIncrement * i;
 
 			mDevice->CreateRenderTargetView(mRenderTargets[i].Get(), 0, cpuHandle);
-
 		}
 
 	}

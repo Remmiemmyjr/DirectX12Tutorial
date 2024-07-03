@@ -8,6 +8,7 @@ namespace Engine {
 		~D12DescriptorHeap();
 
 		void InitializeDepthHeap(ID3D12Device* pDevice);
+		void InitializeTextureHeap(ID3D12Device* pDevice);
 
 		void Release();
 	};
