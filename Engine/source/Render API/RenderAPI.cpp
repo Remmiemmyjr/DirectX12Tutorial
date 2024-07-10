@@ -58,8 +58,9 @@ namespace Engine {
 
 		// DESC HEAPS
 		mDepthDescHeap.InitializeDepthHeap(mDevice.Get());
-		mTexDescHeap.InitializeTextureHeap(mDevice.Get());
-		ID3D12DescriptorHeap* descriptorHeaps[] = { mDepthDescHeap.Get(), mTexDescHeap.Get() };
+		mTexDescHeap.InitializeTextureHeap(mDevice.Get());  //NEW
+		mRTVDescHeap.InitializeRTVHeap(mDevice.Get());
+		//ID3D12DescriptorHeap* descriptorHeaps[] = { mDepthDescHeap.Get(), mTexDescHeap.Get() };
 
 
 		D3D12_DEPTH_STENCIL_VIEW_DESC dsvDesc = {};
@@ -266,7 +267,9 @@ namespace Engine {
 		// ***************************************************************
 
 
+
 		mBasePipeline.Initialize(mDevice.Get());
+
 
 
 		// View Proj Matrix                                       // CAMERA
@@ -363,7 +366,13 @@ namespace Engine {
 		}
 
 		mComputePipeline.Initialize(mDevice.Get());
+		mTexture.InitializeAs2DTexture(mDevice.Get(),1920,1080);
+
 		//- Bind the texture as render target and render to it.
+		D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle = mRTVDescHeap->GetCPUDescriptorHandleForHeapStart();
+		mDevice->CreateRenderTargetView(mTexture.Get(), nullptr, rtvHandle);
+
+	
 		//- Unbind it as a render target and Bind it as a shader resource and use it in the next shader.
         //- Just note that a texture cannot be bound as a target and a resource at the same time.
 		//- Need resource Buffers to help w transition
@@ -381,6 +390,16 @@ namespace Engine {
 		barrier.Transition.Subresource = 0;
 		barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_PRESENT;
 		barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_RENDER_TARGET;
+
+		//D3D12_RESOURCE_BARRIER barrier = {};
+		//barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
+		//barrier.Transition.pResource = mTexture.Get();
+		//barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE; // Not sure what "before" state should be
+		//barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_RENDER_TARGET;
+		//barrier.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
+		
+
+
 
 		mCommandList.GFXCmd()->ResourceBarrier(1, &barrier);
 
@@ -403,11 +422,9 @@ namespace Engine {
 		mCommandList.GFXCmd()->IASetIndexBuffer(&mIBView);
 
 
-
 		mCommandList.GFXCmd()->SetComputeRootUnorderedAccessView(0, mVertexBuffer->GetGPUVirtualAddress()); // !!! added for compute shader !!!
 
 
-			
 		// DRAWING STUFF HERE *******************************************************************
 		//mCommandList.GFXCmd()->DrawInstanced(G_BOX_VERTS, 1, 0, 0);
 		//mCommandList.GFXCmd()->DrawIndexedInstanced(G_INDICES, 1, 0, 0, 0);

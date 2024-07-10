@@ -33,9 +33,8 @@ namespace Engine {
 		uavResourceDesc.Flags = D3D12_RESOURCE_FLAG_ALLOW_UNORDERED_ACCESS;
 
 
-		ID3D12Resource* uavResource;
 		pDevice->CreateCommittedResource(&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT), D3D12_HEAP_FLAG_NONE, &uavResourceDesc,
-										D3D12_RESOURCE_STATE_UNORDERED_ACCESS, nullptr, IID_PPV_ARGS(&uavResource));
+										D3D12_RESOURCE_STATE_UNORDERED_ACCESS, nullptr, IID_PPV_ARGS(uavResource));
 
 
 		D3D12_UNORDERED_ACCESS_VIEW_DESC uavDesc = {};
@@ -47,7 +46,7 @@ namespace Engine {
 		uavDesc.Buffer.Flags = D3D12_BUFFER_UAV_FLAG_NONE;
 
 		CD3DX12_CPU_DESCRIPTOR_HANDLE uavHandle((*uavHeap)->GetCPUDescriptorHandleForHeapStart());
-		YT_EVAL_HR(pDevice->CreateUnorderedAccessView(*uavResourceDesc, nullptr, &uavDesc, IID_PPV_ARGS(GetAddressOf())), "Error creating descriptor heap");
+		pDevice->CreateUnorderedAccessView(*uavResource, nullptr, &uavDesc, uavHandle);
 	}
 
 	void UAV::Release()

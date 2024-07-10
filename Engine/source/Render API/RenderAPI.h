@@ -52,6 +52,7 @@ namespace Engine {
 
 		D12DescriptorHeap mDepthDescHeap;
 		D12DescriptorHeap mTexDescHeap;
+		D12DescriptorHeap mRTVDescHeap;
 		BufferUploader mBufferUploader;
 		// **************************************
 
@@ -74,10 +75,10 @@ namespace Engine {
 
 		DirectX::XMMATRIX mViewProjectionMatrix;
 
+
 	private: 
 		UINT mWidth = 0;
 		UINT mHeight = 0;
-
 
 	private: //temp testvars
 		UINT mCurentidx = 0;

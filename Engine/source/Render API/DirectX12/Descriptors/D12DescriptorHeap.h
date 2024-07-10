@@ -9,6 +9,7 @@ namespace Engine {
 
 		void InitializeDepthHeap(ID3D12Device* pDevice);
 		void InitializeTextureHeap(ID3D12Device* pDevice);
+		void InitializeRTVHeap(ID3D12Device* pDevice);
 
 		void Release();
 	};

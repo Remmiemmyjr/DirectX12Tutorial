@@ -32,7 +32,6 @@ namespace Engine {
 		rootParameter[2].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
 
 
-
 		D3D12_VERSIONED_ROOT_SIGNATURE_DESC rsDesc = { };
 		rsDesc.Version = D3D_ROOT_SIGNATURE_VERSION_1_0;
 		rsDesc.Desc_1_0.pParameters = rootParameter;
