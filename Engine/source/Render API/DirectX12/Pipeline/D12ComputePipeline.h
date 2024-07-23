@@ -19,7 +19,7 @@ namespace Engine {
 
 	private:
 		ComputeRootSignature mRootSignature;
-		HLSLShader mShaders[1];
+		HLSLShader mShaders;
 	};
 
 

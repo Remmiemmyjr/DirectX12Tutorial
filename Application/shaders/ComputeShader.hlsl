@@ -1,6 +1,6 @@
 
-Texture2D input : register(t0);
-RWTexture2D output : register(u0);
+Texture2D<float4> input : register(t0);
+RWTexture2D<float4> output : register(u0);
 
 // most optimal config, defining thread group. 
 [numthreads(8, 8, 1)]

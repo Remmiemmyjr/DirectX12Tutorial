@@ -13,11 +13,11 @@ namespace Engine {
 	{
 		Microsoft::WRL::ComPtr<ID3DBlob> computeShader;
 		//D3DCompileFromFile(L"ComputeShader.hlsl", nullptr, nullptr, "main", "cs_5_1", 0, 0, &computeShader, nullptr);
-		mShaders[0].Initialize(L"shaders/ComputeShader.hlsl", HLSLShader::ShaderType::COMPUTE);
+		mShaders.Initialize(L"shaders/ComputeShader.hlsl", HLSLShader::ShaderType::COMPUTE);
 
 		D3D12_COMPUTE_PIPELINE_STATE_DESC computeDesc;
 		computeDesc.pRootSignature = mRootSignature.Get();
-		computeDesc.CS = { mShaders[0].GetByteBlob()->GetBufferPointer(), mShaders[0].GetByteBlob()->GetBufferSize()};
+		computeDesc.CS = { mShaders.GetByteBlob()->GetBufferPointer(), mShaders.GetByteBlob()->GetBufferSize()};
 		computeDesc.NodeMask = 0;
 		computeDesc.Flags = D3D12_PIPELINE_STATE_FLAG_NONE;
 
@@ -28,7 +28,7 @@ namespace Engine {
 	void D12ComputePipeline::Release()
 	{
 		mRootSignature.Release();
-		mShaders[0].Release();
+		mShaders.Release();
 
 		if (Get()) {
 			Reset();
