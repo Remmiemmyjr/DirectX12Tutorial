@@ -81,6 +81,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="ResourceView.h" />
     <ClInclude Include="source\Render API\DirectX12\Descriptors\UAV.h" />
     <ClInclude Include="source\Render API\DirectX12\Pipeline\ComputeRootSignature.h" />
     <ClInclude Include="source\Render API\DirectX12\Pipeline\D12ComputePipeline.h" />
@@ -106,6 +107,7 @@
     <ClInclude Include="source\Utilities\Utilities.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="ResourceView.cpp" />
     <ClCompile Include="source\Render API\DirectX12\Descriptors\UAV.cpp" />
     <ClCompile Include="source\Render API\DirectX12\Pipeline\ComputeRootSignature.cpp" />
     <ClCompile Include="source\Render API\DirectX12\Pipeline\D12ComputePipeline.cpp" />
