@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "D12Resource.h"
+#include "d3dx12.h"
 
 
 namespace Engine {
@@ -92,6 +93,45 @@ namespace Engine {
 
 		YT_EVAL_HR(pDevice->CreateCommittedResource(&heapProp, D3D12_HEAP_FLAG_NONE, &resDesc, D3D12_RESOURCE_STATE_DEPTH_WRITE, &clearVal, IID_PPV_ARGS(GetAddressOf())), "Error creating a depth buffer");
 	}
+
+
+	// Generate a simple black and white checkerboard texture.
+	std::vector<UINT8> D12Resource::GenerateTextureData()
+	{
+		const UINT rowPitch = 265 * 4;
+		const UINT cellPitch = rowPitch >> 3;        // The width of a cell in the checkboard texture.
+		const UINT cellHeight = 265 >> 3;    // The height of a cell in the checkerboard texture.
+		const UINT textureSize = rowPitch * 265;
+
+		std::vector<UINT8> data(textureSize);
+		UINT8* pData = &data[0];
+
+		for (UINT n = 0; n < textureSize; n += 4)
+		{
+			UINT x = n % rowPitch;
+			UINT y = n / rowPitch;
+			UINT i = x / cellPitch;
+			UINT j = y / cellHeight;
+
+			if (i % 2 == j % 2)
+			{
+				pData[n] = 0x00;        // R
+				pData[n + 1] = 0x00;    // G
+				pData[n + 2] = 0x00;    // B
+				pData[n + 3] = 0xff;    // A
+			}
+			else
+			{
+				pData[n] = 0xff;        // R
+				pData[n + 1] = 0xff;    // G
+				pData[n + 2] = 0xff;    // B
+				pData[n + 3] = 0xff;    // A
+			}
+		}
+
+		return data;
+	}
+
 
 	void D12Resource::Release()
 	{

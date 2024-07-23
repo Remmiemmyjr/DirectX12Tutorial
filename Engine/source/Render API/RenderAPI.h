@@ -53,7 +53,11 @@ namespace Engine {
 		D12DescriptorHeap mDepthDescHeap;
 		D12DescriptorHeap mTexDescHeap;
 		D12DescriptorHeap mRTVDescHeap;
+		D12DescriptorHeap mSRVHeap;
 		BufferUploader mBufferUploader;
+
+		D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle;
+		D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle;
 		// **************************************
 
 

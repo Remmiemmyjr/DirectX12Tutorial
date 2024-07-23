@@ -12,6 +12,7 @@ namespace Engine {
 
 		void InitializeAsDepthBuffer(ID3D12Device* pDevice, const unsigned int width, const unsigned int height);
 		void InitializeAs2DTexture(ID3D12Device* pDevice, const unsigned int width, const unsigned int height); // make sure its usabale as render target and an srv/texture 
+		std::vector<UINT8> GenerateTextureData();
 		// use texture as render target for draw commands. 
 		// create resource barrier command to convert this to read/write state. (first input for compute shader)
 		// need UAV, similar to this 2d texture, set this as UAV

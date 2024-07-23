@@ -58,8 +58,8 @@ namespace Engine {
 
 		// DESC HEAPS
 		mDepthDescHeap.InitializeDepthHeap(mDevice.Get());
-		mTexDescHeap.InitializeTextureHeap(mDevice.Get());  //NEW
-		mRTVDescHeap.InitializeRTVHeap(mDevice.Get());
+		mTexDescHeap.InitializeTextureHeap(mDevice.Get()); 
+		mRTVDescHeap.InitializeRTVHeap(mDevice.Get()); // Allocate a descriptor for the render target view
 		//ID3D12DescriptorHeap* descriptorHeaps[] = { mDepthDescHeap.Get(), mTexDescHeap.Get() };
 
 
@@ -368,14 +368,12 @@ namespace Engine {
 		mComputePipeline.Initialize(mDevice.Get());
 		mTexture.InitializeAs2DTexture(mDevice.Get(),1920,1080);
 
-		//- Bind the texture as render target and render to it.
-		D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle = mRTVDescHeap->GetCPUDescriptorHandleForHeapStart();
-		mDevice->CreateRenderTargetView(mTexture.Get(), nullptr, rtvHandle);
+		mTexture.GenerateTextureData(); // checkerboard?
 
-	
-		//- Unbind it as a render target and Bind it as a shader resource and use it in the next shader.
-        //- Just note that a texture cannot be bound as a target and a resource at the same time.
-		//- Need resource Buffers to help w transition
+
+		//- Bind the texture as render target and render to it.
+		rtvHandle = mRTVDescHeap->GetCPUDescriptorHandleForHeapStart();
+		mDevice->CreateRenderTargetView(mTexture.Get(), nullptr, rtvHandle);
 	}
 
 	void RenderAPI::UpdateDraw()
@@ -383,29 +381,38 @@ namespace Engine {
 		memcpy(mCBPassData.GetCPUMemory(), &mViewProjectionMatrix, sizeof(PassData::viewProj));
 		memcpy((BYTE*)mCBPassData.GetCPUMemory() + sizeof(PassData::viewProj), &mLights[0], sizeof(Light));
 
-		D3D12_RESOURCE_BARRIER barrier = {};
-		barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
-		barrier.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
-		barrier.Transition.pResource = mSwapChain.GetCurrentRenderTarget();
-		barrier.Transition.Subresource = 0;
-		barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_PRESENT;
-		barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_RENDER_TARGET;
-
 		//D3D12_RESOURCE_BARRIER barrier = {};
 		//barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
-		//barrier.Transition.pResource = mTexture.Get();
-		//barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE; // Not sure what "before" state should be
+		//barrier.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
+		//barrier.Transition.pResource = mSwapChain.GetCurrentRenderTarget();
+		//barrier.Transition.Subresource = 0;
+		//barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_PRESENT;
 		//barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_RENDER_TARGET;
-		//barrier.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
-		
 
-
+		D3D12_RESOURCE_BARRIER barrier = {};
+		barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
+		barrier.Transition.pResource = mTexture.Get();
+		barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE; // Not sure what "before" state should be
+		barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_RENDER_TARGET;
+		barrier.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
+	
 
 		mCommandList.GFXCmd()->ResourceBarrier(1, &barrier);
 
+
+		// Create an SRV for your texture so that you can read from it.
+		// Describe and create a SRV for the texture.
+		D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
+		srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
+		srvDesc.Format = DXGI_FORMAT_D32_FLOAT;
+		srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
+		srvDesc.Texture2D.MipLevels = 1;
+		mDevice->CreateShaderResourceView(mTexture.Get(), &srvDesc, mSRVHeap->GetCPUDescriptorHandleForHeapStart());
+
+
 		const float clearColor[] = {  0.0f,0.0f,0.0f,1.0f };
-		D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle = mSwapChain.GetCurrentRTVHandle();
-		D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle = mDepthDescHeap->GetCPUDescriptorHandleForHeapStart();
+		rtvHandle = mSwapChain.GetCurrentRTVHandle();
+		dsvHandle = mDepthDescHeap->GetCPUDescriptorHandleForHeapStart();
 
 		mCommandList.GFXCmd()->ClearRenderTargetView(rtvHandle, clearColor, 0, 0);
 		mCommandList.GFXCmd()->ClearDepthStencilView(dsvHandle, D3D12_CLEAR_FLAG_DEPTH, 1.f, 0, 0, 0);
@@ -458,13 +465,17 @@ namespace Engine {
 		// **************************************************************************************
 
 
+		//- Unbind it as a render target and Bind it as a shader resource and use it in the next shader.
+		//- Just note that a texture cannot be bound as a target and a resource at the same time.
+		//- Need resource Buffers to help w transition. Transition back to pixel shader resource
 		barrier = {};
 		barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
 		barrier.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
 		barrier.Transition.pResource = mSwapChain.GetCurrentRenderTarget();
 		barrier.Transition.Subresource = 0;
 		barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET;
-		barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_PRESENT;
+		barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE;
+
 
 		mCommandList.GFXCmd()->ResourceBarrier(1, &barrier);
 
